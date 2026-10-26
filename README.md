@@ -22,3 +22,19 @@ This project strictly follows the **3-Tier Layered Architecture** (Controller - 
 1. **Clone the repository:**
    ```bash
    git clone [https://github.com/mattyti/Cha-Chaan-Teng-Order.git](https://github.com/mattyti/Cha-Chaan-Teng-Order.git)
+   
+Database Setup:
+Create a MySQL database named cha_chaan_teng. (No need to create tables manually, Flyway will handle the schema migrations automatically on startup).
+
+Run the application:
+
+Bash
+./mvnw spring-boot:run
+⚠️ Note on UI
+The frontend HTML interface included in this repository serves purely as a functional API testing tool. My core focus and 100% of my development effort for this project is on the Java Spring Boot Backend (Architecture, Database, API design).
+
+📸 API Testing Screenshot:
+<img width="1205" height="610" alt="image" src="https://github.com/user-attachments/assets/e7bd0406-8632-4321-87d6-042f07c142e2" />
+<img width="2026" height="577" alt="image" src="https://github.com/user-attachments/assets/52788546-c412-4d7b-944f-08a546ddba9e" />
+<img width="870" height="1023" alt="image" src="https://github.com/user-attachments/assets/9d9fa868-1338-4625-a346-efa048db1f33" />
+
