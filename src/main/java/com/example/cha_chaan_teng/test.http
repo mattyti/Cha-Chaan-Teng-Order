@@ -1,0 +1,25 @@
+POST http://localhost:8080/api/menus
+Content-Type: application/json
+
+{
+  "name": "乾炒牛河",
+  "price": 50
+}
+
+### 客人落單：兩碟乾炒牛河
+POST http://localhost:8080/api/orders
+Content-Type: application/json
+
+{
+  "totalAmount": 100,
+  "items": [
+    {
+      "menuName": "乾炒牛河",
+      "quantity": 2,
+      "subtotal": 100
+    }
+  ]
+}
+
+### 更新第一張單嘅狀態做「已完成」
+PUT http://localhost:8080/api/orders/1/status?status=COMPLETED

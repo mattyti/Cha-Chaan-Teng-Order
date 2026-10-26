@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>阿嫲冰室 API TESTING UI</title>
+</head>
+<body>
+<h1>阿嫲冰室 - 系統 API TESTING TOOLS</h1>
+<hr>
+
+<h2>1. 讀取餐牌 (GET /api/menus)</h2>
+<div id="menu-list">連線中...</div>
+
+<hr>
+
+<h2>2. 目前購物車</h2>
+<div id="cart-list">購物車是空的</div>
+<p><strong>總金額: HK$ <span id="total-price">0</span></strong></p>
+
+<h2>3. 提交訂單 (POST /api/orders)</h2>
+<button onclick="submitOrder()">確認落單並傳送至 Database</button>
+
+<script>
+    let menus = [];
+    let cart = [];
+
+    // 載入餐牌
+    async function fetchMenus() {
+        try {
+            const response = await fetch('/api/menus');
+            menus = await response.json();
+            renderMenus();
+        } catch (error) {
+            document.getElementById('menu-list').innerText = "無法載入餐牌，請檢查 Spring Boot 是否已啟動。";
+        }
+    }
+
+    // 顯示餐牌列表
+    function renderMenus() {
+        let html = '<ul>';
+        for (let menu of menus) {
+            html += `<li>${menu.name} - HK$ ${menu.price} <button onclick="addToCart(${menu.id})">加入</button></li>`;
+        }
+        html += '</ul>';
+        document.getElementById('menu-list').innerHTML = html;
+    }
+
+    // 加入購物車
+    function addToCart(menuId) {
+        const menu = menus.find(m => m.id === menuId);
+        const existing = cart.find(item => item.menuId === menuId);
+
+        if (existing) {
+            existing.quantity += 1;
+            existing.subtotal = existing.quantity * existing.price;
+        } else {
+            cart.push({
+                menuId: menu.id,
+                menuName: menu.name,
+                price: menu.price,
+                quantity: 1,
+                subtotal: menu.price
+            });
+        }
+        renderCart();
+    }
+
+    // 顯示購物車內容
+    function renderCart() {
+        if (cart.length === 0) {
+            document.getElementById('cart-list').innerHTML = '購物車是空的';
+            document.getElementById('total-price').innerText = '0';
+            return;
+        }
+
+        let html = '<ul>';
+        let total = 0;
+        for (let item of cart) {
+            html += `<li>${item.menuName} x ${item.quantity} (小計: HK$ ${item.subtotal})</li>`;
+            total += item.subtotal;
+        }
+        html += '</ul>';
+
+        document.getElementById('cart-list').innerHTML = html;
+        document.getElementById('total-price').innerText = total;
+    }
+
+    // 提交訂單
+    async function submitOrder() {
+        if (cart.length === 0) {
+            alert('請先加入餐點！');
+            return;
+        }
+
+        const total = cart.reduce((sum, item) => sum + item.subtotal, 0);
+        const orderData = {
+            totalAmount: total,
+            items: cart.map(item => ({
+                menuName: item.menuName,
+                quantity: item.quantity,
+                subtotal: item.subtotal
+            }))
+        };
+
+        try {
+            const response = await fetch('/api/orders', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(orderData)
+            });
+
+            if (response.ok) {
+                const result = await response.json();
+                alert('落單成功！成功寫入 Database。單號為：' + result.id);
+                cart = [];
+                renderCart();
+            } else {
+                alert('落單失敗！');
+            }
+        } catch (error) {
+            alert('系統連線錯誤！');
+        }
+    }
+
+    // 網頁載入時自動執行
+    fetchMenus();
+</script>
+</body>
+</html>
