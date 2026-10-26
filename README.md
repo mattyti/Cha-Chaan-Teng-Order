@@ -1,6 +1,6 @@
 # Cha Chaan Teng POS System (茶餐廳落單系統) ☕
 
-A backend Point of Sale (POS) system built for traditional Hong Kong tea restaurants. This system provides RESTful APIs to streamline order creation, menu management, and kitchen status updates.
+A backend Point of Sale (POS) system built for restaurants. This system provides RESTful APIs to streamline order creation, menu management, and kitchen status updates.
 
 ## 🏗️ Architecture & Design
 This project strictly follows the **3-Tier Layered Architecture** (Controller - Service - Repository) to ensure separation of concerns, scalability, and maintainability—aligning with enterprise-level development standards.
